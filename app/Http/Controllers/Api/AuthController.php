@@ -25,7 +25,7 @@ class AuthController extends BaseController
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'c_password' => 'required|same:password',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => 'required|exists:roles,name'
         ]);
 
         if ($validator->fails()) {
@@ -40,7 +40,7 @@ class AuthController extends BaseController
 
         $success['token'] =  $token;
         $success['user'] =  $user;
-        $success['role'] = $user->role->name;
+        $success['role'] = $user->roles[0]->name;
 
         return $this->sendResponse($success, 'User register successfully.');
     }
@@ -58,7 +58,7 @@ class AuthController extends BaseController
             $user = Auth::guard('api')->user();
             $success['token'] =  $token;
             $success['user'] =  $user;
-            $success['role'] = $user->role->name;
+            $success['role'] = $user->roles[0]->name;
 
             return $this->sendResponse($success, 'User login successfully.');
         } else {
