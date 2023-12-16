@@ -14,7 +14,7 @@ class AppSettingSeeder extends Seeder
     public function run(): void
     {
         AppSetting::create([
-            'business_category' => "Company",
+            'business_category_enum' => "Company",
             "default_theme_enum" => "light"
         ]);
     }
