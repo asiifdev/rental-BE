@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Template;
+use Illuminate\Http\Request;
+
+class TemplateController extends Controller
+{
+    /**
+    * Display a listing of the resource.
+    */
+    public function index()
+    {
+        $formHelper = getFormHelper('tableName');
+        $relation = getRelationKey('tableName');
+        if(count($relation) > 0){
+            $datas = Template::with($relation)->latest()->first();
+        } else {
+            $datas = Template::latest()->first();
+        }
+        $data = [
+            "breadcrumbs" => [
+                "parent" => "Master",
+                "child" => "Template",
+            ],
+            'formHelper' => $formHelper,
+            "title" => "Template",
+            'data' => $datas,
+        ];
+        return view('admin.tableName.index', $data);
+    }
+
+    /**
+    * Show the form for creating a new resource.
+    */
+    public function create()
+    {
+        //
+    }
+
+    /**
+    * Store a newly created resource in storage.
+    */
+    public function store(Request $request)
+    {
+        $request['_method'] = 'PATCH';
+        $this->update($request);
+        return redirect()->back();
+    }
+
+    /**
+    * Display the specified resource.
+    */
+    public function show(string $id)
+    {
+        return Template::find($id);
+    }
+
+    /**
+    * Show the form for editing the specified resource.
+    */
+    public function edit(Template $city)
+    {
+        //
+    }
+
+    /**
+    * Update the specified resource in storage.
+    */
+    public function update(Request $request)
+    {
+        $array = getArrayPost($request, 'tableName');
+        try {
+            $data = Template::latest()->first();
+            $data->update($array);
+            afterPost($request);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            $array['error'] = $e->getMessage();
+            return response()->json($array);
+        }
+    }
+
+    /**
+    * Remove the specified resource from storage.
+    */
+    public function destroy(Request $request, string $id)
+    {
+        try {
+            Template::destroy($id);
+            afterPost($request);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+}
